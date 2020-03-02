@@ -25,8 +25,14 @@ fn main() {
             }
         }
     };
-    println!("{}", n);
-    process::exit(0);
+    println!("Working...");
+    std::process::exit(match output::make_scl(n) {
+        Ok(()) => 0,
+        Err(e) => {
+            eprint!("{}", e);
+            1
+        }
+    });
 }
 
 mod error {
@@ -106,43 +112,23 @@ mod input {
 
 mod output {
     use num_rational::Ratio;
-    use std::fs::File;
+    use std::fs::OpenOptions;
     use std::io::prelude::*;
     
-    pub fn make_array(d: u32) -> array {
-        let mut tonic = Ratio::new(d, d);
-        let mut scale = [tonic; 7 * d - 1];
-        let mut n = d + 1;
-        for x in scale.iter() {
-            let x = Ratio::new(n, d);
-            let n = n + 1;
+    pub fn make_scl(x: u32) -> std::io::Result<()> {
+        let name = format!("Primodality-{}.scl", x);
+        let mut scl = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(name)?;
+        writeln!(scl, "{} primodal scale through 8n", x)?;
+        writeln!(scl, "    {}", 7 * x - 1)?;
+        let mut n = x + 1;
+        while n != 8 * x {
+            writeln!(scl, "{}", Ratio::new(n, x))?;
+            n += 1;
         };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        println!("Complete!");
+        Ok(())
+    }
+}
