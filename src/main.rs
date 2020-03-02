@@ -31,7 +31,6 @@ fn main() {
 
 mod error {
     
-    use std::error::Error as StdError;
     use std::fmt;
     use std::num;
     use std::io;
@@ -55,17 +54,6 @@ mod error {
         }
     }
 
-    impl StdError for Error {
-        fn description(&self) -> &str {
-            match *self {
-                Error::Io(ref err) => err.description(),
-                Error::Parse(ref err) => StdError::description(err),
-                Error::TooSmall => "One and two are invalid inputs.",
-                Error::NotPrime => "Your input is not prime.",
-            }
-        }
-    }
-
     impl From<io::Error> for Error {
         fn from(err: io::Error) -> Error {
             Error::Io(err)
@@ -83,8 +71,8 @@ mod error {
 mod input {
     use std::usize; 
     use std::io;
-    use crate::error::Error as Error;
-    use primapalooza::is_prime as is_prime;
+    use crate::error::Error;
+    use primapalooza::is_prime;
 
     pub fn get() -> Result<String, Error> {
         let mut input = String::new();
@@ -114,3 +102,47 @@ mod input {
         Ok(output)
     }
 }
+
+
+mod output {
+    use num_rational::Ratio;
+    use std::fs::File;
+    use std::io::prelude::*;
+    
+    pub fn make_array(d: u32) -> array {
+        let mut tonic = Ratio::new(d, d);
+        let mut scale = [tonic; 7 * d - 1];
+        let mut n = d + 1;
+        for x in scale.iter() {
+            let x = Ratio::new(n, d);
+            let n = n + 1;
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
