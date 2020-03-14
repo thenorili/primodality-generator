@@ -2,7 +2,7 @@ use std::process;
 use std::io::{self, Write};
 
 fn main() {
-    println!("Please input a prime to generate its primodal .scl file.");
+    println!("Please input an integer to generate its polyprimodal .scl file.");
     let n = loop {
         print!(">>> ");
         io::stdout().flush().unwrap();
@@ -46,7 +46,6 @@ mod error {
         Io(io::Error),
         Parse(num::ParseIntError),
         TooSmall,
-        NotPrime,
     }   
 
     impl fmt::Display for Error {
@@ -55,7 +54,6 @@ mod error {
                 Error::Io(ref err) => write!(f, "IO error: {}", err),
                 Error::Parse(ref err) => write!(f, "Parse error: {}", err),
                 Error::TooSmall => write!(f, "IO error: One and two are invalid inputs."),
-                Error::NotPrime => write!(f, "IO error: Your input is not prime."),
             }
         }
     }
@@ -78,7 +76,6 @@ mod input {
     use std::usize; 
     use std::io;
     use crate::error::Error;
-    use primapalooza::is_prime;
 
     pub fn get() -> Result<String, Error> {
         let mut input = String::new();
@@ -94,10 +91,8 @@ mod input {
     fn check(input: u32) -> Result<(), Error> {
         if input <= 2 { 
             Err(Error::TooSmall)
-        } else if is_prime(input as usize) {
-            Ok(())
         } else {
-            Err(Error::NotPrime)
+          Ok(())
         }
     }
 
@@ -116,12 +111,12 @@ mod output {
     use std::io::prelude::*;
     
     pub fn make_scl(x: u32) -> std::io::Result<()> {
-        let name = format!("Primodality-{}.scl", x);
+        let name = format!("Polyprimodality-{}.scl", x);
         let mut scl = OpenOptions::new()
             .append(true)
             .create(true)
             .open(name)?;
-        writeln!(scl, "{} primodal scale through 8n", x)?;
+        writeln!(scl, "{} polyprimodal scale through 8n", x)?;
         writeln!(scl, "    {}", 7 * x - 1)?;
         let mut n = x + 1;
         while n != 8 * x {
