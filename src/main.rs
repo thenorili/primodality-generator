@@ -73,7 +73,6 @@ mod error {
 
 
 mod input {
-    use std::usize; 
     use std::io;
     use crate::error::Error;
 
