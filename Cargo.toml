@@ -1,6 +1,6 @@
 [package]
 name = "primodality_generator"
-version = "0.8.0"
+version = "1.1.0"
 authors = ["thenorili <norilinoriginal@gmail.com>"]
 edition = "2018"
 
@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 primapalooza = "0.3.4"
 num-rational = "0.2.3"
+clap = {version = "~2.27.0", features = ["yaml"]}
