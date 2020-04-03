@@ -1,5 +1,6 @@
 use clap::{Arg, App};
 use std::str::FromStr;
+use std::io::{self, Write};
 use primodality_generator::menu as menu;
 use primodality_generator::error as error;
 use primodality_generator::uinput as uinput;
@@ -77,6 +78,11 @@ fn main() {
     if args.is_present("poly") { poly = true; }
     let from = u8::from_str(args.value_of("from").unwrap()).unwrap();
     let to = u8::from_str(args.value_of("to").unwrap()).unwrap();
+
+    if to <= from { panic!("--from must be less than --to. I'll crash so you can try again :)") }
+
+    io::stdout().flush().unwrap();
+
 
     let ini = Config { from: from, to: to, poly: poly, };
 

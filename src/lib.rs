@@ -5,7 +5,11 @@ pub mod menu {
     use std::process;
 
     pub fn dialog(poly: bool) -> u32 {
-        println!("Please input an integer to generate its primodal .scl file.");
+        let nom = match poly {    
+            true => "polyprimodality",    
+            false => "primodality",    
+        };       
+        println!("Please input an integer to generate its {} .scl file.", nom);
         let num = loop {
             print!(">>> ");
             io::stdout().flush().unwrap();
