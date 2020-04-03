@@ -1,4 +1,4 @@
-mod menu {
+pub mod menu {
 
     use std::io::{self, Write};
     use crate::uinput;
@@ -38,7 +38,7 @@ mod menu {
     }
 }
 
-mod error {
+pub mod error {
     
     use std::fmt;
     use std::num;
@@ -77,7 +77,7 @@ mod error {
 }
 
 
-mod uinput {
+pub mod uinput {
     use std::io;
     use crate::error::Error;
     use primapalooza::is_prime;
@@ -116,46 +116,38 @@ mod uinput {
         Ok(output)
     }
 
-    pub fn val_parse_check(input: Option<&str>) -> Result<u32, Error> {
-        if let Some(number) = input {
-            let thruput = parse(String::from(number))?;
-            let output = check(thruput)?;
-            Ok(output)
-        } else { Err(Error::Io) }
-    }
-
-    struct Config {
-        from: u8,
-        to: u8,
-        poly: bool,
+    pub struct Config {
+        pub from: u8,
+        pub to: u8,
+        pub poly: bool,
     } 
-
 }
 
 
-mod output {
+pub mod output {
     use num_rational::Ratio;
     use std::fs::OpenOptions;
     use std::io::prelude::*;
-    use crate::Config;
+    use super::uinput::Config;
     
     pub fn make_scl(n: u32, ini: Config) -> std::io::Result<()> {
-        if ini.poly == true {
-            let nom = "polyprimodality";
-        } else {
-            let nom = "primodality";
-        }
+        let nom = match ini.poly {
+            true => "polyprimodality",
+            false => "primodality",
+        };
         let name = format!("{}-{}.scl", nom, n);
         let mut scl = OpenOptions::new()
             .append(true)
             .create(true)
             .open(name)?;
-        writeln!(scl, "{} {} scale {}n through {}n", n, nom, ini.from, ini.to)?;
-        writeln!(scl, "    {}", (((ini.to - ini.from) * n) - 1))?;
-        let mut n = (ini.from * n) + 1;
-        while i != (ini.to * n) {
-            writeln!(scl, "{}", Ratio::new(i, n))?;
-            i += 1;
+        let min = u32::from(ini.from);
+        let max = u32::from(ini.to);
+        writeln!(scl, "{} {} scale {}n through {}n", n, nom, min, max)?;
+        writeln!(scl, "    {}", (((max - min) * n) - 1))?;
+        let mut iter = (min * n) + 1;
+        while iter != (max * n) {
+            writeln!(scl, "{}", Ratio::new(iter, n))?;
+            iter += 1;
         };
         println!("Complete!");
         Ok(())

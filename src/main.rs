@@ -4,6 +4,7 @@ use primodality_generator::menu as menu;
 use primodality_generator::error as error;
 use primodality_generator::uinput as uinput;
 use primodality_generator::output;
+use primodality_generator::uinput::Config as Config;
 
 fn main() {
     let args = clap::App::new("Primodality_Generator")
@@ -80,26 +81,27 @@ fn main() {
 
     let ini = Config { from: from, to: to, poly: poly, };
 
-    if args.is_present("input") { let input = args.value_of("input").unwrap(); }
-
     fn input_validation(input: &str, poly: bool) -> Result<u32, error::Error> {
-        let input_int = uinput::parse(input)?;
-        let input_val = uinput::parse(input_int)?;
-        if poly = false {
+        let input_int = uinput::parse(String::from(input))?;
+        let input_val = uinput::check(input_int)?;
+        if poly == false {
             let input_pri = uinput::check_prime(input_val)?;
-            return input_pri
-        } else { return input_val }
+            return Ok(input_pri)
+        } else { return Ok(input_val) }
     }
+    
+    let mut num: u32;
 
     if args.is_present("input") {
-        let num_or_err = match input_validation(input, ini.poly) {
-            Ok(num) => num,
+        let input = args.value_of("input").unwrap();
+        num = match input_validation(input, ini.poly) {
+            Ok(number) => number,
             Err(err) => { 
                 eprint!("{}", err);
-                let num = menu::dialog(ini.poly);
+                menu::dialog(ini.poly)
             },
         };
-    } else { let num = menu::dialog(ini.poly); }
+    } else { num = menu::dialog(ini.poly); }
 
     println!("Working...");
     std::process::exit(match primodality_generator::output::make_scl(num, ini) {
