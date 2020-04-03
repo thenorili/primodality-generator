@@ -7,7 +7,7 @@ A unique primodal scale exists for every conceivable prime. *n*-primodality is t
 
 This program is run via command line. It accepts primes greater than 2 that fit in an unsigned 32-bit integer. I've produced a portable linux binary which can be found in the builds directory. If you have any questions, reach out on [twitter](twitter.com/thenorili)!
 
-Primodality_Generator 1.1.0
+`Primodality_Generator 1.1.0
 Generates just intonation .scl files for a given integer denominator.
 
 USAGE:
@@ -25,4 +25,4 @@ OPTIONS:
                          Valid values are 1-255. Default value is 8. [default: 8]
 
 ARGS:
-    <input>    Sets denominator directly, skipping the menu.
+    <input>    Sets denominator directly, skipping the menu.`
