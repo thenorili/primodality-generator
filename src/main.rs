@@ -6,7 +6,7 @@ use primodality_generator::uinput as uinput;
 use primodality_generator::uinput::Config as Config;
 
 fn main() {
-    let args = clap::App::new("Primodality_Generator")
+    let args = App::new("Primodality_Generator")
         .version("1.1.0")
         .author("Nori Li <www.github.com/thenorili>")
         .about("Generates just intonation .scl files for a given integer denominator.")
