@@ -3,7 +3,6 @@ use std::str::FromStr;
 use primodality_generator::menu as menu;
 use primodality_generator::error as error;
 use primodality_generator::uinput as uinput;
-use primodality_generator::output;
 use primodality_generator::uinput::Config as Config;
 
 fn main() {
@@ -74,8 +73,8 @@ fn main() {
         }
     }
     
-    let poly = false;
-    if args.is_present("poly") { let poly = true; }
+    let mut poly = false;
+    if args.is_present("poly") { poly = true; }
     let from = u8::from_str(args.value_of("from").unwrap()).unwrap();
     let to = u8::from_str(args.value_of("to").unwrap()).unwrap();
 
@@ -90,7 +89,7 @@ fn main() {
         } else { return Ok(input_val) }
     }
     
-    let mut num: u32;
+    let num: u32;
 
     if args.is_present("input") {
         let input = args.value_of("input").unwrap();
