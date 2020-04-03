@@ -5,14 +5,14 @@ pub mod menu {
     use std::process;
 
     pub fn dialog(poly: bool) -> u32 {
-        println!("Please input an integer to generate its polyprimodal .scl file.");
+        println!("Please input an integer to generate its primodal .scl file.");
         let num = loop {
             print!(">>> ");
             io::stdout().flush().unwrap();
-            let raw_input = uinput::get_parse_check();
+            let mut raw_input = uinput::get_parse_check();
             if poly == false {
-                if let Ok(raw_input) = raw_input { 
-                    let raw_input = uinput::check_prime(raw_input);
+                if let Ok(input_value) = raw_input { 
+                    raw_input = uinput::check_prime(input_value);
                 }
             }
             match raw_input {
@@ -40,32 +40,39 @@ pub mod menu {
 
 pub mod error {
     
+    use thiserror;
     use std::fmt;
     use std::num;
     use std::io;
 
+    #[derive(Debug, thiserror::Error)]
+    pub enum Kind {
+        #[error(transparent)]
+        IO(io::Error),
+        #[error("You can do better. Aim higher!")]
+        TooSmall,
+        #[error("Curiously, your input is not prime.")]
+        NotPrime,
+    }
+
     #[derive(Debug)]
     pub enum Error {
-        Io(io::Error),
+        Input(Kind),
         Parse(num::ParseIntError),
-        TooSmall,
-        NotPrime
     }   
 
     impl fmt::Display for Error {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             match *self {
-                Error::Io(ref err) => write!(f, "IO error: {}", err),
+                Error::Input(ref err) => write!(f, "IO error: {}", err),
                 Error::Parse(ref err) => write!(f, "Parse error: {}", err),
-                Error::TooSmall => write!(f, "IO error: You can do better. Aim higher!"),
-                Error::NotPrime => write!(f, "IO error: Curiously, your input is not prime."),
             }
         }
     }
 
     impl From<io::Error> for Error {
         fn from(err: io::Error) -> Error {
-            Error::Io(err)
+            Error::Input(Kind::IO(err))
         }
     }
 
@@ -80,6 +87,7 @@ pub mod error {
 pub mod uinput {
     use std::io;
     use crate::error::Error;
+    use crate::error::Kind;
     use primapalooza::is_prime;
 
     pub fn get() -> Result<String, Error> {
@@ -95,7 +103,7 @@ pub mod uinput {
 
     pub fn check(input: u32) -> Result<u32, Error> {
         if input <= 2 { 
-            Err(Error::TooSmall)
+            Err(Error::Input(Kind::TooSmall))
         } else {
           Ok(input)
         }
@@ -105,7 +113,7 @@ pub mod uinput {
         if is_prime(input as usize) {
             Ok(input)
         } else {
-            Err(Error::NotPrime)
+            Err(Error::Input(Kind::NotPrime))
         }
     }
 
