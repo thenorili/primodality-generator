@@ -1,4 +1,4 @@
-# primodality-generator
+# primodality_generator-1.1
 Takes primes as input to generate primodal .scl files.
 
 **Primodality** is a new category of digital harmony space conceived of by [Zheanna Erose](https://www.youtube.com/channel/UC--VosYH0BHISbb4SFO9rQA).
@@ -7,7 +7,7 @@ A unique primodal scale exists for every conceivable prime. *n*-primodality is t
 
 This program is run via command line. It accepts primes greater than 2 that fit in an unsigned 32-bit integer. I've produced a portable linux binary which can be found in the builds directory. If you have any questions, reach out on [twitter](twitter.com/thenorili)!
 
-Primodality_Generator 1.1.0
+## Documentation:
 
 Generates just intonation .scl files for a given integer denominator.
 
