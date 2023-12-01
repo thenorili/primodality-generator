@@ -14,7 +14,7 @@ pub mod menu {
             print!(">>> ");
             io::stdout().flush().unwrap();
             let mut raw_input = uinput::get_parse_check();
-            if poly == false {
+            if !poly {
                 if let Ok(input_value) = raw_input {
                     raw_input = uinput::check_prime(input_value);
                 }
@@ -41,7 +41,7 @@ pub mod menu {
                 }
             }
         };
-        return num;
+        num
     }
 }
 
