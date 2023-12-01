@@ -10,7 +10,8 @@ pub mod menu {
             false => "primodality",
         };
         println!("Please input an integer to generate its {} .scl file.", nom);
-        let num = loop {
+
+        loop {
             print!(">>> ");
             io::stdout().flush().unwrap();
             let mut raw_input = uinput::get_parse_check();
@@ -27,9 +28,7 @@ pub mod menu {
                     let choice = uinput::get();
                     match choice {
                         Ok(d) => {
-                            if d.trim() == "r" {
-                                ();
-                            } else {
+                            if d.trim() != "r" {
                                 process::exit(0);
                             }
                         }
@@ -40,8 +39,7 @@ pub mod menu {
                     }
                 }
             }
-        };
-        num
+        }
     }
 }
 
