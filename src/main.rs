@@ -65,12 +65,12 @@ fn main() {
         match num_or_err {
             Ok(num) => {
                 if num < 255 {
-                    return Ok(());
+                    Ok(())
                 } else {
-                    return Err(String::from("Minimum can't be 255."));
+                    Err(String::from("Minimum can't be 255."))
                 }
             }
-            Err(err) => return Err(err),
+            Err(err) => Err(err),
         }
     }
 
@@ -79,12 +79,12 @@ fn main() {
         match num_or_err {
             Ok(num) => {
                 if num > 0 {
-                    return Ok(());
+                    Ok(())
                 } else {
-                    return Err(String::from("Maximum can't be 0."));
+                    Err(String::from("Maximum can't be 0."))
                 }
             }
-            Err(err) => return Err(err),
+            Err(err) => Err(err),
         }
     }
 
@@ -101,37 +101,31 @@ fn main() {
 
     io::stdout().flush().unwrap();
 
-    let ini = Config {
-        from: from,
-        to: to,
-        poly: poly,
-    };
+    let ini = Config { from, to, poly };
 
     fn input_validation(input: &str, poly: bool) -> Result<u32, error::Error> {
         let input_int = uinput::parse(String::from(input))?;
         let input_val = uinput::check(input_int)?;
-        if poly == false {
+        if !poly {
             let input_pri = uinput::check_prime(input_val)?;
-            return Ok(input_pri);
+            Ok(input_pri)
         } else {
-            return Ok(input_val);
+            Ok(input_val)
         }
     }
 
-    let num: u32;
-
-    if args.is_present("input") {
+    let num: u32 = if args.is_present("input") {
         let input = args.value_of("input").unwrap();
-        num = match input_validation(input, ini.poly) {
+        match input_validation(input, ini.poly) {
             Ok(number) => number,
             Err(err) => {
                 eprint!("{}", err);
                 menu::dialog(ini.poly)
             }
-        };
+        }
     } else {
-        num = menu::dialog(ini.poly);
-    }
+        menu::dialog(ini.poly)
+    };
 
     println!("Working...");
     std::process::exit(match primodality_generator::output::make_scl(num, ini) {
