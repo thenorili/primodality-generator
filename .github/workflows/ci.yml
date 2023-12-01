@@ -2,9 +2,15 @@ name: Continuous integration
 
 on:
   push:
+    paths-ignore:
+      - '*.md'
+      - '*.txt'
     branches:
       - main
-  pull_request: {}
+  pull_request:
+    paths-ignore:
+      - '*.md'
+      - '*.txt'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'push' && github.run_number }}
