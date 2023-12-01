@@ -1,34 +1,37 @@
 pub mod menu {
 
-    use std::io::{self, Write};
     use crate::uinput;
+    use std::io::{self, Write};
     use std::process;
 
     pub fn dialog(poly: bool) -> u32 {
-        let nom = match poly {    
-            true => "polyprimodality",    
-            false => "primodality",    
-        };       
+        let nom = match poly {
+            true => "polyprimodality",
+            false => "primodality",
+        };
         println!("Please input an integer to generate its {} .scl file.", nom);
         let num = loop {
             print!(">>> ");
             io::stdout().flush().unwrap();
             let mut raw_input = uinput::get_parse_check();
             if poly == false {
-                if let Ok(input_value) = raw_input { 
+                if let Ok(input_value) = raw_input {
                     raw_input = uinput::check_prime(input_value);
                 }
             }
             match raw_input {
-                Ok(input) => { break input }
+                Ok(input) => break input,
                 Err(e) => {
                     eprint!("{} ", e);
                     println!("Input (r) to reset or the any key to quit the program");
                     let choice = uinput::get();
                     match choice {
                         Ok(d) => {
-                            if d.trim() == "r" { (); 
-                            } else { process::exit(0); }
+                            if d.trim() == "r" {
+                                ();
+                            } else {
+                                process::exit(0);
+                            }
                         }
                         Err(e) => {
                             eprint!("{}", e);
@@ -38,16 +41,16 @@ pub mod menu {
                 }
             }
         };
-        return num
+        return num;
     }
 }
 
 pub mod error {
-    
-    use thiserror;
+
     use std::fmt;
-    use std::num;
     use std::io;
+    use std::num;
+    use thiserror;
 
     #[derive(Debug, thiserror::Error)]
     pub enum Kind {
@@ -63,7 +66,7 @@ pub mod error {
     pub enum Error {
         Input(Kind),
         Parse(num::ParseIntError),
-    }   
+    }
 
     impl fmt::Display for Error {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -87,12 +90,11 @@ pub mod error {
     }
 }
 
-
 pub mod uinput {
-    use std::io;
     use crate::error::Error;
     use crate::error::Kind;
     use primapalooza::is_prime;
+    use std::io;
 
     pub fn get() -> Result<String, Error> {
         let mut input = String::new();
@@ -106,13 +108,13 @@ pub mod uinput {
     }
 
     pub fn check(input: u32) -> Result<u32, Error> {
-        if input <= 2 { 
+        if input <= 2 {
             Err(Error::Input(Kind::TooSmall))
         } else {
-          Ok(input)
+            Ok(input)
         }
     }
-    
+
     pub fn check_prime(input: u32) -> Result<u32, Error> {
         if is_prime(input as usize) {
             Ok(input)
@@ -132,26 +134,22 @@ pub mod uinput {
         pub from: u8,
         pub to: u8,
         pub poly: bool,
-    } 
+    }
 }
 
-
 pub mod output {
+    use super::uinput::Config;
     use num_rational::Ratio;
     use std::fs::OpenOptions;
     use std::io::prelude::*;
-    use super::uinput::Config;
-    
+
     pub fn make_scl(n: u32, ini: Config) -> std::io::Result<()> {
         let nom = match ini.poly {
             true => "polyprimodality",
             false => "primodality",
         };
         let name = format!("{}-{}.scl", nom, n);
-        let mut scl = OpenOptions::new()
-            .append(true)
-            .create(true)
-            .open(name)?;
+        let mut scl = OpenOptions::new().append(true).create(true).open(name)?;
         let min = u32::from(ini.from);
         let max = u32::from(ini.to);
         writeln!(scl, "{} {} scale {}n through {}n", n, nom, min, max)?;
@@ -160,7 +158,7 @@ pub mod output {
         while iter != (max * n) {
             writeln!(scl, "{}", Ratio::new(iter, n))?;
             iter += 1;
-        };
+        }
         println!("Complete!");
         Ok(())
     }
